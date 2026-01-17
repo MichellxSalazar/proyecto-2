@@ -1,60 +1,45 @@
 <template>
   <div class="layout">
     <Sidebar @logout="cerrarSesion" />
-
     <main class="content">
       <Header 
         title="Solicitar Tutoría" 
         subtitle="Completa el formulario para agendar una tutoría personalizada" 
       />
-
       <section class="section">
         <form @submit.prevent="enviarSolicitud" class="solicitud-form">
-          <!-- Materia -->
           <div class="form-group">
-            <label for="materia">Materia <span class="required">*</span></label>
-            <input id="materia" v-model="materia" type="text" placeholder="Ej. Aplicaciones Web" required />
+            <label for="materia">Materia *</label>
+            <input id="materia" v-model="materia" type="text" required />
           </div>
-
-          <!-- Tema -->
           <div class="form-group">
-            <label for="tema">Tema específico <span class="required">*</span></label>
-            <input id="tema" v-model="tema" type="text" placeholder="Ej. Proyecto Final" required />
+            <label for="tema">Tema específico *</label>
+            <input id="tema" v-model="tema" type="text" required />
           </div>
-
-          <!-- Fecha y hora en dos columnas -->
           <div class="form-row">
             <div class="form-group">
-              <label for="fecha">Fecha deseada <span class="required">*</span></label>
+              <label for="fecha">Fecha *</label>
               <input id="fecha" v-model="fecha" type="date" required />
             </div>
             <div class="form-group">
-              <label for="hora">Hora <span class="required">*</span></label>
+              <label for="hora">Hora *</label>
               <input id="hora" v-model="hora" type="time" required />
             </div>
           </div>
-
-          <!-- Descripción -->
           <div class="form-group">
-            <label for="descripcion">Descripción adicional</label>
-            <textarea id="descripcion" v-model="descripcion" rows="3" placeholder="Agrega detalles relevantes..."></textarea>
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" v-model="descripcion"></textarea>
           </div>
-
-          <!-- Botones -->
           <div class="form-actions">
             <button type="submit" class="btn-enviar">📩 Enviar solicitud</button>
             <button type="button" class="btn-cancelar" @click="limpiarFormulario">❌ Cancelar</button>
           </div>
         </form>
-
-        <!-- Modal de confirmación -->
         <div v-if="confirmacion" class="modal-tutoria">
           <div class="modal-contenido">
-            <div class="modal-header">
-              <h3>✅ Solicitud enviada</h3>
-              <span class="cerrar-modal" @click="confirmacion = false">&times;</span>
-            </div>
-            <p>Tu solicitud ha sido registrada correctamente. Recibirás una notificación cuando sea asignada.</p>
+            <h3>✅ Solicitud enviada correctamente</h3>
+            <p>Tu solicitud ha sido registrada.</p>
+            <button class="btn-cerrar" @click="cerrarModal">Cerrar</button>
           </div>
         </div>
       </section>
@@ -64,15 +49,11 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useTutoriasStore } from '../store/useTutoriasStore'
-import { useUserStore } from '../store/useUserStore'
-import { useRouter } from 'vue-router'
 import Sidebar from '../components/Sidebar.vue'
 import Header from '../components/Header.vue'
-
-const store = useTutoriasStore()
-const userStore = useUserStore()
-const router = useRouter()
+import { useUserStore } from '../store/useUserStore'
+import { useTutoriasStore } from '../store/useTutoriasStore'
+import { useRouter } from 'vue-router'
 
 const materia = ref('')
 const tema = ref('')
@@ -81,18 +62,29 @@ const hora = ref('')
 const descripcion = ref('')
 const confirmacion = ref(false)
 
+const userStore = useUserStore()
+const store = useTutoriasStore()
+const router = useRouter()
+
 function enviarSolicitud() {
   const nuevaTutoria = {
+    id: Date.now(),
     nombre: tema.value,
     materia: materia.value,
     fecha: fecha.value,
     hora: hora.value,
     descripcion: descripcion.value,
-    asesor: null
+    asesor: null,
+    estado: 'Solicitada'
   }
-  store.solicitarTutoria(nuevaTutoria.id || Date.now())
+
+  store.agregarSolicitud(nuevaTutoria)
+
   confirmacion.value = true
-  limpiarFormulario()
+  setTimeout(() => {
+    confirmacion.value = false
+    limpiarFormulario()
+  }, 3000)
 }
 
 function limpiarFormulario() {
@@ -101,6 +93,11 @@ function limpiarFormulario() {
   fecha.value = ''
   hora.value = ''
   descripcion.value = ''
+}
+
+function cerrarModal() {
+  confirmacion.value = false
+  limpiarFormulario()
 }
 
 function cerrarSesion() {

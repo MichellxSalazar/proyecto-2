@@ -11,7 +11,7 @@
             <li 
               v-for="n in notificaciones" 
               :key="n.id" 
-              :class="{ leida: n.leida }"
+              :class="['notif', n.tipo, { leida: n.leida }]"
               @click="abrirNotificacion(n)"
             >
               <div class="mensaje">
@@ -61,6 +61,7 @@ function cerrarSesion() {
   router.push('/login')
 }
 
+// Filtrar notificaciones por rol del usuario
 const notificaciones = computed(() => store.getNotificacionesPorRol(userStore.usuario?.rol))
 const seleccionada = ref(null)
 
@@ -83,6 +84,7 @@ function rechazarTutoria(id) {
   cerrarDetalle()
 }
 
+// Sidebar dinámico según rol
 const sidebarComponent = computed(() =>
   userStore.usuario?.rol === 'docente' ? SidebarDocente : Sidebar
 )
@@ -107,4 +109,14 @@ const sidebarComponent = computed(() =>
   border: 1px solid #ccc;
   background: #f9f9f9;
 }
+
+/* Estilos por tipo de notificación */
+.notif.solicitud { border-left: 4px solid #0078d4; }
+.notif.confirmacion { border-left: 4px solid #28a745; }
+.notif.rechazo { border-left: 4px solid #dc3545; }
+.notif.nueva { border-left: 4px solid #17a2b8; }
+.notif.info { border-left: 4px solid #6c757d; }
+.notif.pendiente { border-left: 4px solid #ffc107; }
+.notif.perdida { border-left: 4px solid #6c757d; }
+.notif.proxima { border-left: 4px solid #20c997; }
 </style>

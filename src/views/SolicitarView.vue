@@ -10,8 +10,16 @@
         <form @submit.prevent="enviarSolicitud" class="solicitud-form">
           <div class="form-group">
             <label for="materia">Materia *</label>
-            <input id="materia" v-model="materia" type="text" required />
+            <select id="materia" v-model="materia" required>
+              <option disabled value="">Seleccione una materia</option>
+              <option>Gestión de Proyectos de TI</option>
+              <option>Ingeniería de Software II</option>
+              <option>Minería de datos</option>
+              <option>Redes de computadoras</option>
+              <option>Aplicaciones Web</option>
+            </select>
           </div>
+
           <div class="form-group">
             <label for="tema">Tema específico *</label>
             <input id="tema" v-model="tema" type="text" required />

@@ -124,7 +124,7 @@ const subtituloCalendario = computed(() =>
           <p><strong>Fecha:</strong> {{ formatearFecha(seleccionada) }}</p>
           <div v-for="ev in eventosSeleccionados" :key="ev.id" class="evento-detalle">
             <p><strong>Título:</strong> {{ ev.titulo }}</p>
-            <p><strong>Materia:</strong> {{ ev.descripcion }}</p>
+            <p><strong>Materia:</strong> {{ ev.materia}}</p>
             <p><strong>Hora:</strong> {{ ev.hora }}</p>
             <p><strong>Asesor:</strong> {{ ev.asesor }}</p>
             <hr />

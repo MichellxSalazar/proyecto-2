@@ -75,11 +75,13 @@ function cerrarDetalle() {
 }
 
 function aceptarTutoria(id) {
+  console.log('Aceptar tutoria', id)
   store.responderSolicitud(id, true)
   cerrarDetalle()
 }
 
 function rechazarTutoria(id) {
+  console.log('Rechazar tutoria', id)
   store.responderSolicitud(id, false)
   cerrarDetalle()
 }
@@ -108,6 +110,14 @@ const sidebarComponent = computed(() =>
   padding: 15px;
   border: 1px solid #ccc;
   background: #f9f9f9;
+}
+
+.detalle button {
+  margin-right: 15px;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
 }
 
 /* Estilos por tipo de notificación */

@@ -51,6 +51,12 @@ export const useTutoriasStore = defineStore('tutorias', {
     responderSolicitud(id, aceptada) {
       const t = this.tutorias.find(t => t.id === id)
       if (t) {
+        // Update the solicitud status
+        const solicitud = this.solicitudesTutorias.find(s => s.id === id)
+        if (solicitud) {
+          solicitud.estado = aceptada ? 'Aceptada' : 'Rechazada'
+        }
+
         if (aceptada) {
           this.notificaciones.push({
             id: Date.now(),
@@ -69,6 +75,7 @@ export const useTutoriasStore = defineStore('tutorias', {
               fecha: t.fecha,
               hora: t.hora,
               descripcion: t.descripcion,
+              materia: t.materia || 'General',
               asesor: t.asesor || this.usuario?.email
             })
           }
@@ -86,6 +93,9 @@ export const useTutoriasStore = defineStore('tutorias', {
           })
           this.historial.push({ ...t, estado: 'Rechazada' })
         }
+
+        // Remove the solicitud notification for docente
+        this.notificaciones = this.notificaciones.filter(n => !(n.tutoriaId === id && n.tipo === 'solicitud' && n.rolDestino === 'docente'))
       }
     },
 
@@ -96,6 +106,10 @@ export const useTutoriasStore = defineStore('tutorias', {
       // Normalizar fecha a ISO
       if (tutoria.fecha) {
         tutoria.fecha = new Date(tutoria.fecha).toISOString().split('T')[0]
+      }
+
+      if (!tutoria.materia) {
+        tutoria.materia = 'General'
       }
 
       this.tutorias.push(tutoria)
@@ -130,6 +144,7 @@ export const useTutoriasStore = defineStore('tutorias', {
           fecha: tutoria.fecha,
           hora: tutoria.hora,
           descripcion: tutoria.descripcion,
+          materia: tutoria.materia,
           asesor: tutoria.asesor
         })
       }

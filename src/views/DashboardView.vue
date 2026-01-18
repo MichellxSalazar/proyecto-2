@@ -29,7 +29,7 @@
 
       <!-- Notificaciones -->
       <section class="section">
-        <h2 class="section-title">🔔 Notificaciones</h2>
+        <h2 class="section-title">🔔 Historial Reciente</h2>
         <div v-if="notificaciones.length" class="card-list">
           <div v-for="n in notificaciones" :key="n.id" class="card notificacion-card" :class="n.leida ? 'leida' : 'no-leida'">
             <div class="notificacion-contenido">
@@ -76,6 +76,7 @@ const notificaciones = computed(() =>
 function solicitar(tutoria) {
   store.agregarSolicitud({
     ...tutoria,
+    materia: tutoria.materia,
     estado: 'Solicitada',
     solicitante: userStore.usuario?.email
   })
